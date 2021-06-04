@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class='header-bar'>
+    <div>
+        <h1>Hello, {{ user }}</h1>
+    </div>
+
+    {% if request.user.is_authenticated %}
+       <a href="{% url 'logout' %}">Sair</a>
+    {% else %}
+        <a href="{% url 'login' %}">Entrar</a>
+    {% endif %}
+</div>
+
+<h1>Meus Grupos</h1>
+
+<div id="search-add-wrapper">
+<form method="GET">
+    <input type="text" name="busca" value="{{ busca }}">
+    <input type="submit" value="Search">
+</form>
+    <a id="add-link" href="{% url 'grupo:criar' %}">&#x2b;</a>
+</div>
+
+
+<div id="tasklist" class="task-items-wrapper">
+    {% for grupo in grupos %}
+
+        <div class="task-wrapper" data-position="{{ grupo.pk }}">
+            <div class="task-title">
+                <div class="task-complete-icon"></div>
+                <a href="{% url 'grupo:grupo' grupo.slug %}">{{ grupo }}</a>
+            </div>
+            <div class="task-controls">
+                <a class="delete-link" href="{% url 'grupo:apagar' grupo.id %}">&#215;</a>
+                <a class="update-link" href="{% url 'grupo:atualizar' grupo.id %}">&nbsp;&#10247;</a>
+            </div>
+        </div>
+
+    {% empty %}
+        <h3>No items in list</h3>
+    {% endfor %}
+
+
+
+    <div class="col-sm-4">
+        <form action='/' method="GET">
+            <label id="texto" for="tipo_consulta">Grupo</label>
+            <select class="select-css" id="id_grupo" name="grupo">
+                <option >-------</option>
+                {% for grupo in grupos %}
+                    <option value="{{ grupo.id }} ">{{ grupo }}</option>
+                {% endfor %}
+            </select>
+
+            <label id="texto" for="id_subgrupo">Sub-Grupo</label>
+            <select class="select-css" id="id_subgrupo" name="subgrupo">
+                <option >-------</option>
+            </select>
+
+            <label id="texto" for="id_subgrupo">Tarefas</label>
+            <select class="select-css" id="id_tarefa" name="consulta">
+                <option >-------</option>
+            </select>
+            
+            <button id="pesquisar">Pesquisar<i class="fa fa-search"></i></button>
+        </form>
+    </div>
+
+
+
+</div>
+
+{% endblock content %}
+
+{% block scripts %}
+    <script src="{% static 'home/js/busca.js' %}"></script>
+{% endblock %}
+
